@@ -1,7 +1,7 @@
 
 
 // This lib provides functions that help to create simple XML-logfiles.
-// Version 1.0.0    |   big_changes.new_functions.bugs_fixed
+// Version 1.0.1    |   big_changes.new_functions.bugs_fixed
 //
 // Current version needs file "Styles.css" placed in the same directory with log file.
 // Please do not forget about it.
@@ -29,8 +29,8 @@ const char INTRO[]              =
 const char FATAL_ERROR_BEG[]    = "<FATAL_ERORR>";
 const char FATAL_ERROR_END[]    = "</FATAL_ERORR>\n";
 
-const char ERROR_BEG[]          = "<ERROR_1>";
-const char ERROR_END[]          = "</ERROR_1>\n";
+const char ERROR_BEG[]          = "<ERROR>";
+const char ERROR_END[]          = "</ERROR>\n";
 
 const char WARNING_BEG[]        = "<WARNING>";
 const char WARNING_END[]        = "</WARNING>\n";
