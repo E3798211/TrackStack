@@ -1,0 +1,9 @@
+#ifndef ERRORS_H_INCLUDED
+#define ERRORS_H_INCLUDED
+
+enum ERRORCODES
+{
+    SUCCESS
+};
+
+#endif // ERRORS_H_INCLUDED
