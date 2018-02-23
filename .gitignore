@@ -3,3 +3,6 @@
 *.depend
 *.layout
 *.cbp
+
+*.css
+*.xml

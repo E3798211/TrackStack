@@ -17,4 +17,5 @@ int main()
 
     FinishLog(a);
     */
+    Stack a;
 }

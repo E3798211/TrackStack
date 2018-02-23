@@ -16,6 +16,21 @@ int FinishLog(FILE* log_file)
     return SUCCESS;
 }
 
+char* AppendExtention(char* base_name, int extention)
+{
+    assert(base_name != nullptr);
+
+    switch(extention)
+    {
+        case TXT:
+            return strcat(base_name, TXT_EXT);
+        case XML:
+            return strcat(base_name, XML_EXT);
+        default:
+            return nullptr;
+    }
+}
+
 unsigned Log(int message_type, FILE* log_file, const char* format, ...)
 {
     assert(log_file != nullptr);
