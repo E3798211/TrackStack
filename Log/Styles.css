@@ -1,4 +1,4 @@
-FATAL_ERROR 	{color:red}
-ERROR		{color:red}
-WARNING		{color:blue}
-INFO		{color:green}
+FATAL_ERROR 	{color:red;	margin-left:3cm;font-size:large;display:block}
+ERROR		{color:red;  	margin-left:2cm;font-size:large;display:block}
+WARNING		{color:blue; 	margin-left:1cm;font-size:large;display:block}
+INFO		{color:green;	margin-left:1cm;font-size:large;display:block}

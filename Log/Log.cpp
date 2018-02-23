@@ -5,7 +5,14 @@ int InitLog(FILE* log_file)
     assert(log_file != nullptr);
 
     fprintf(log_file, "%s", INTRO);
+    return SUCCESS;
+}
 
+int FinishLog(FILE* log_file)
+{
+    assert(log_file != nullptr);
+
+    fprintf(log_file, "%s", OUTRO);
     return SUCCESS;
 }
 
@@ -15,7 +22,7 @@ unsigned Log(int message_type, FILE* log_file, const char* format, ...)
     assert(format   != nullptr);
 
     va_list  arguments_list;
-    va_start(arguments_list, strlen(format));
+    va_start(arguments_list, format);
 
     // "Opening" message in the file
     switch (message_type)
@@ -37,6 +44,7 @@ unsigned Log(int message_type, FILE* log_file, const char* format, ...)
         break;
 
         default:
+            va_end(arguments_list);
             return 0;
     }
 
@@ -56,10 +64,6 @@ unsigned Log(int message_type, FILE* log_file, const char* format, ...)
 
             case 'd':
                 fprintf(log_file, "%lg ", va_arg(arguments_list, double));
-            break;
-
-            case 'c':
-                fprintf(log_file, "%d ",  va_arg(arguments_list, char));
             break;
 
             case 's':
@@ -92,6 +96,7 @@ unsigned Log(int message_type, FILE* log_file, const char* format, ...)
         break;
     }
 
+    va_end(arguments_list);
     return i;
 }
 

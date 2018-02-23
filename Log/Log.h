@@ -1,7 +1,7 @@
 
 
 // This lib provides functions that help to create simple XML-logfiles.
-// Version 1.0.1    |   big_changes.new_functions.bugs_fixed
+// Version 1.1.1    |   big_changes.new_functions.bugs_fixed
 //
 // Current version needs file "Styles.css" placed in the same directory with log file.
 // Please do not forget about it.
@@ -13,6 +13,7 @@
 
 #include <assert.h>
 #include <cstdio>
+#include <iostream>
 #include <stdarg.h>
 #include <cstring>
 
@@ -24,10 +25,14 @@ const char INTRO[]              =
 "\
 <?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
 <?xml-stylesheet href=\"Styles.css\"?>\n\n\
+<MAIN>\
 ";
 
-const char FATAL_ERROR_BEG[]    = "<FATAL_ERORR>";
-const char FATAL_ERROR_END[]    = "</FATAL_ERORR>\n";
+const char OUTRO[]              =
+"</MAIN>";
+
+const char FATAL_ERROR_BEG[]    = "<FATAL_ERROR>";
+const char FATAL_ERROR_END[]    = "</FATAL_ERROR>\n";
 
 const char ERROR_BEG[]          = "<ERROR>";
 const char ERROR_END[]          = "</ERROR>\n";
@@ -56,6 +61,14 @@ enum MSG_TYPE
 */
 int InitLog(FILE* log_file);
 
+/// Finishes log file
+/**
+    Returns SUCCESS in case of success, error code otherwise.
+
+    \param [in]     log_file        Log file
+*/
+int FinishLog(FILE* log_file);
+
 /// Prints message to the log file
 /**
     Returns amount of arguments printed.
@@ -68,7 +81,6 @@ int InitLog(FILE* log_file);
             u       for     unsigned integer
             i       for     integer
             d       for     double
-            c       for     char
             s       for     string
 */
 unsigned Log(int message_type, FILE* log_file, const char* format, ...);
