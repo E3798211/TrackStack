@@ -17,5 +17,31 @@ int main()
 
     FinishLog(a);
     */
+
+
     Stack a;
+    a.Push(1.3);
+    a.Push(1.3);
+    a.Push(1.3);
+    a.Push(1.3);
+    a.Push(1.3);
+    a.Push(1.3);
+
+    data_t d;
+    a.Pop(&d);
+    a.Pop(&d);
+    a.Pop(&d);
+    a.Pop(&d);
+    a.Pop(&d);
+    a.Pop(&d);
+    a.Pop(&d);
+    a.Pop(&d);
+    a.Pop(&d);
+    a.Pop(&d);
+    a.Pop(&d);
+    a.Pop(&d);
+    a.Pop(&d);
+    a.Pop(&d);
+    a.Pop(&d);
+    a.Pop(&d);
 }

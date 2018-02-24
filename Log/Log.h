@@ -1,7 +1,7 @@
 
 
 // This lib provides functions that help to create simple XML-logfiles.
-// Version 1.3.1    |   big_changes.new_functions.bugs_fixed
+// Version 2.3.1    |   big_changes.new_functions.bugs_fixed
 //
 // Current version needs file "Styles.css" placed in the same directory with log file.
 // Please do not forget about it.
@@ -43,12 +43,16 @@ const char            WARNING_END[] = "</WARNING>\n";
 const char               INFO_BEG[] = "<INFO>";
 const char               INFO_END[] = "</INFO>\n";
 
+const char               DUMP_BEG[] = "<DUMP>";
+const char               DUMP_END[] = "</DUMP>\n";
+
 enum MSG_TYPE
 {
     FATAL_ERROR,
     ERROR,
     WARNING,
-    INFO
+    INFO,
+    DUMP
 };
 
 // =================================================    OUTPUT FILE EXTENTIONS
@@ -77,7 +81,7 @@ const char               DEFAULT[] = "\x1b[0m ";
 
 /// Initializes log file
 /**
-    Returns SUCCESS in case of success, error code otherwise.
+    Returns 0 in case of success, error code otherwise.
 
     \param [in]     log_file        Log file
 */
@@ -85,7 +89,7 @@ int InitLog(FILE* log_file);
 
 /// Finishes log file
 /**
-    Returns SUCCESS in case of success, error code otherwise.
+    Returns 0 in case of success, error code otherwise.
 
     \param [in]     log_file        Log file
 */
@@ -117,8 +121,6 @@ char* AppendExtention(char* base_name, int extention);
             s       for     string
 */
 unsigned Log(int message_type, FILE* log_file, const char* format, ...);
-
-
 
 // =================================================    MACRO
 

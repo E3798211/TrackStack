@@ -5,7 +5,7 @@ int InitLog(FILE* log_file)
     assert(log_file != nullptr);
 
     fprintf(log_file, "%s", INTRO);
-    return SUCCESS;
+    return ERR_CODES::ESUCCESS;
 }
 
 int FinishLog(FILE* log_file)
@@ -13,7 +13,7 @@ int FinishLog(FILE* log_file)
     assert(log_file != nullptr);
 
     fprintf(log_file, "%s", OUTRO);
-    return SUCCESS;
+    return ERR_CODES::ESUCCESS;
 }
 
 char* AppendExtention(char* base_name, int extention)
@@ -56,6 +56,10 @@ unsigned Log(int message_type, FILE* log_file, const char* format, ...)
 
         case INFO:
             fprintf(log_file, "%s", INFO_BEG);
+        break;
+
+        case DUMP:
+            fprintf(log_file, "%s", DUMP_BEG);
         break;
 
         default:
@@ -108,6 +112,13 @@ unsigned Log(int message_type, FILE* log_file, const char* format, ...)
 
         case INFO:
             fprintf(log_file, "%s", INFO_END);
+        break;
+
+        case DUMP:
+            fprintf(log_file, "%s", DUMP_END);
+        break;
+
+        default:
         break;
     }
 
