@@ -1,4 +1,125 @@
-#include "../Head/Stack.h"
+#ifndef STACK_H_INCLUDED
+#define STACK_H_INCLUDED
+
+#include <cstdio>
+#include <iostream>
+#include <climits>
+#include "../Log/Log.h"
+
+// =================================================    SAFENESS
+// Comment next line in order to turn safeness off
+#define __SAFE
+#ifdef  __SAFE
+    #define SAFE
+#else
+    #define SAFE if(0)
+#endif // __SAFE
+
+// Preventing multiple filenames
+// #define _MULTIPLE_FILENAMES
+
+// Extended logs
+#define _EXT_LOGS
+#ifdef _EXT_LOGS
+    #define EXT_LOGS
+#else
+    #define EXT_LOGS if(0)
+#endif // _EXT_LOGS
+
+// Service constants
+const int                CANARY = -12345;
+const int               DELETED = 10110111;
+
+const int               RESERVE = 10;
+const int          MIN_CAPACITY = 2;
+const int          MAX_CAPACITY = UINT_MAX - RESERVE;
+
+const char            ENTERED[] = "Entered: ";
+const char             QUITED[] = "Quited : ";
+const char        UNEXPECTRED[] = "Unexpected error in ";
+const char           EXECUTED[] = "Executed successfully: ";
+const char             REASON[] = "Reason: ";
+const char          CANCELLED[] = "Operation cancelled: ";
+const char         ALLOC_FAIL[] = "Failed to allocate bytes: ";
+const char          OVERFLOWN[] = "Stack overflown";
+const char         UNDERFLOWN[] = "Stack underflown";
+const char             BROKEN[] = "Stack broken";
+
+template <typename data_T>
+class Stack {
+private:
+// =================================================    SERVICE
+    /// Log file
+    FILE*       _log_file       = nullptr;
+
+    /// Name of the object
+    #ifdef _MULTIPLE_FILENAMES
+        char        _name[sizeof(int*) + 5] = {};
+    #else
+        char        _name[sizeof(int*) + 5] = "name";
+    #endif // _MULTIPLE_FILENAMES
+
+    /// Stack status
+    bool        _ready          = true;
+
+    /// Stack is deleted?
+    bool        _deleted        = false;
+
+// =================================================    STACK PROPERTIES
+    /// Current capacity
+    size_t      _capacity       = 0;
+
+    /// Current amount of elements in the stack
+    size_t      _n_elements     = 0;
+
+    /// Stack
+    data_T*     _stack          = nullptr;
+
+// =================================================    INNER FUNCTIONS
+
+    /// Checks if stack is in correct state
+    /**
+        Returns true if stack is ok, false otherwise
+    */
+    bool CheckStack();
+
+    /// Resizes Stack
+    /**
+        Returns error code.
+
+        \param [in]     new_size        New size
+
+        Just cuts or extends _stack.
+    */
+    int StackResize(size_t new_size);
+
+public:
+    /// Constructor
+    Stack();
+
+    /// Destructor
+    ~Stack();
+
+    /// Push method
+    /**
+        Returns error code.
+
+        \param [in]     new_elem        Next elem in the stack
+    */
+    int Push(data_T new_elem);
+
+    /// Pop method
+    /**
+        Returns error code.
+
+        \param [out]    container       Container for the popped element
+    */
+    int Pop(data_T* container);
+
+    /// Prints as much info as possible
+    int Dump(const char* call_func = __FUNCTION__);
+};
+
 
 #define DumpFunc()      Dump(__FUNCTION__)
 #define EnterFunc()     Log(INFO, _log_file, "sss", ENTERED, __FUNCTION__, "()");
@@ -35,12 +156,11 @@
 
 // =============================================================    PRIVATE
 
-bool Stack::CheckStack()
+template <typename data_T>
+bool Stack<data_T>::CheckStack()
 {
     EnterFunc();
 
-    if(_first_canary            != CANARY)      _ready = false;
-    if(_last_canary             != CANARY)      _ready = false;
     if(_deleted)                                _ready = false;
     if(_stack == nullptr)                       _ready = false;
     if(_stack[0]                != CANARY)      _ready = false;
@@ -50,25 +170,26 @@ bool Stack::CheckStack()
     return _ready;
 }
 
-int Stack::StackResize(size_t new_size)
+template <typename data_T>
+int Stack<data_T>::StackResize(size_t new_size)
 {
     EnterFunc();
 
-    SAFE SimpleCheck();
+    // SAFE SimpleCheck();
 
-    EXT_LOGS DumpFunc();
+    // EXT_LOGS DumpFunc();
 
-    data_t* tmp = nullptr;
+    data_T* tmp = nullptr;
     try
     {
-        tmp = new data_t [new_size];
+        tmp = new data_T [new_size];
     }
     catch(std::bad_alloc& ex)
     {
-        Log(ERROR, _log_file, "sss", CANCELLED, __FUNCTION__, "()");
-        Log(ERROR, _log_file, "ssu", REASON, ALLOC_FAIL, new_size * sizeof(size_t));
+        // Log(ERROR, _log_file, "sss", CANCELLED, __FUNCTION__, "()");
+        // Log(ERROR, _log_file, "ssu", REASON, ALLOC_FAIL, new_size * sizeof(data_T));
 
-        EXT_LOGS DumpFunc();
+        // EXT_LOGS DumpFunc();
 
         QuitFunc();
         return ERR_CODES::EALLOC_FAIL;
@@ -82,16 +203,16 @@ int Stack::StackResize(size_t new_size)
     delete [] _stack;
     _stack = tmp;
 
-    _stack[0]               = CANARY;
-    _stack[new_size - 1]    = CANARY;
+    // _stack[0]               = CANARY;
+    // _stack[new_size - 1]    = CANARY;
 
     _capacity = new_size;
 
-    Log(INFO, _log_file, "sss", EXECUTED, __FUNCTION__, "()");
+    // Log(INFO, _log_file, "sss", EXECUTED, __FUNCTION__, "()");
 
-    EXT_LOGS DumpFunc();
+    // EXT_LOGS DumpFunc();
 
-    SAFE SimpleCheck();
+    // SAFE SimpleCheck();
 
     QuitFunc();
     return ERR_CODES::ESUCCESS;
@@ -99,10 +220,11 @@ int Stack::StackResize(size_t new_size)
 
 // =============================================================    PUBLIC
 
-Stack::Stack():
-    _first_canary   (CANARY),
+template <typename data_T>
+Stack<data_T>::Stack():
+    // _first_canary   (CANARY),
     _n_elements     (0),
-    _last_canary    (CANARY),
+    // _last_canary    (CANARY),
     _ready          (true)
 {
     #ifdef _MULTIPLE_FILENAMES
@@ -125,13 +247,13 @@ Stack::Stack():
         QuitFunc();
         return;
     }
-    InitLog  (_log_file);
-    Log(INFO, _log_file, "s", "Log file created");
+    // InitLog  (_log_file);
+    // Log(INFO, _log_file, "s", "Log file created");
 
 
     try
     {
-        _stack = new data_t [2];
+        _stack = new data_T [2];
     }
     catch(std::bad_alloc& ex)
     {
@@ -148,66 +270,73 @@ Stack::Stack():
     _n_elements = 0;
     _capacity   = 2;
 
-    EXT_LOGS DumpFunc();
+    // EXT_LOGS DumpFunc();
 }
 
-Stack::~Stack()
+template <typename data_T>
+Stack<data_T>::~Stack()
 {
     if(!_deleted)
     {
         delete [] _stack;
         _n_elements     = DELETED;
         _capacity       = DELETED;
-        _first_canary   = DELETED;
-        _last_canary    = DELETED;
+        // _first_canary   = DELETED;
+        // _last_canary    = DELETED;
 
         _deleted        = true;
 
-        EXT_LOGS DumpFunc();
+        // EXT_LOGS DumpFunc();
 
-        Log(INFO, _log_file, "sss", "Stack ", _name, "successfuly deleted");
-        FinishLog(_log_file);
+        // Log(INFO, _log_file, "sss", "Stack ", _name, "successfuly deleted");
+        // FinishLog(_log_file);
         fclose   (_log_file);
     }
 }
 
-int Stack::Push(data_t new_elem)
+template <typename data_T>
+int Stack<data_T>::Push(data_T new_elem)
 {
     EnterFunc();
 
-    SAFE EnterCheck((_capacity > MAX_CAPACITY), OVERFLOWN);
+    // SAFE EnterCheck((_capacity > MAX_CAPACITY), OVERFLOWN);
 
-    EXT_LOGS DumpFunc();
+    // EXT_LOGS DumpFunc();
 
     StackResize(_capacity + 1);
     _stack[++_n_elements] = new_elem;
 
-    SAFE SimpleCheck();
+    std::cout << "pushed " << new_elem << std::endl;
 
-    EXT_LOGS DumpFunc();
+    // SAFE SimpleCheck();
 
-    Log(INFO, _log_file, "sss", EXECUTED, __FUNCTION__, "()");
+    // EXT_LOGS DumpFunc();
+
+    // Log(INFO, _log_file, "sss", EXECUTED, __FUNCTION__, "()");
     QuitFunc();
     return ESUCCESS;
 }
 
-int Stack::Pop(data_t* container)
+template <typename data_T>
+int Stack<data_T>::Pop(data_T* container)
 {
     EnterFunc();
-    SAFE EnterCheck((_capacity <= MIN_CAPACITY), UNDERFLOWN);
+    // SAFE EnterCheck((_capacity <= MIN_CAPACITY), UNDERFLOWN);
 
     assert(container != nullptr);
 
-    EXT_LOGS DumpFunc();
+    // EXT_LOGS DumpFunc();
 
     *container = _stack[_n_elements--];
     StackResize(_capacity - 1);
 
-    EXT_LOGS DumpFunc();
+    std::cout << "poped  " << *container << std::endl;
 
-    SAFE SimpleCheck();
+    // EXT_LOGS DumpFunc();
 
-    Log(INFO, _log_file, "sss", EXECUTED, __FUNCTION__, "()");
+    // SAFE SimpleCheck();
+
+    // Log(INFO, _log_file, "sss", EXECUTED, __FUNCTION__, "()");
     QuitFunc();
     return ERR_CODES::ESUCCESS;
 }
@@ -217,7 +346,9 @@ int Stack::Pop(data_t* container)
 #define DumpDble( var )  Log(DUMP, _log_file, "ssd", VAR(var), "=", (var));
 #define  DumpStr( var )  Log(DUMP, _log_file, "sss", VAR(var), "=", (var));
 
-int Stack::Dump(const char* call_func)
+/*
+template <typename data_T>
+int Stack<data_T>::Dump(const char* call_func)
 {
     if(_log_file == nullptr)
     {
@@ -227,6 +358,7 @@ int Stack::Dump(const char* call_func)
 
     Log(DUMP, _log_file, "sss", "Dump from ", call_func, "(): ");
 
+    /*
     if(_first_canary == CANARY)
     {
         DumpInt(_first_canary);
@@ -245,6 +377,8 @@ int Stack::Dump(const char* call_func)
         Log(ERROR, _log_file, "s", "Second canary dead");
         return ERR_CODES::EBROKEN;
     }
+    */
+    /*
     DumpStr (_name);
     DumpUint(_capacity);
     DumpUint(_n_elements);
@@ -263,3 +397,5 @@ int Stack::Dump(const char* call_func)
 
     return ERR_CODES::ESUCCESS;
 }
+*/
+#endif // STACK_H_INCLUDED
